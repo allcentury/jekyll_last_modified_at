@@ -35,7 +35,7 @@ module JekyllLastModifiedAt
       # we've never seen this file before
       # set the last_modified_at to the mtime and persist
       if !existing_entry
-        entry.last_modified_at = doc.source_file_mtime
+        entry.last_modified_at = doc.source_file_mtime || Time.now.utc
 
         update_file
       elsif existing_entry == entry
