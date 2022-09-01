@@ -7,7 +7,7 @@ require 'jekyll'
 
 module JekyllLastModifiedAt
   class Error < StandardError; end
-  class LastModifiedAtLoader
+  class Loader
     Entry = Struct.new(:file_name, :checksum, :last_modified_at) do
       def ==(other)
         file_name == other.file_name && checksum == other.checksum
@@ -81,7 +81,7 @@ module JekyllLastModifiedAt
 end
 
 Jekyll::Hooks.register(:documents, :post_render, priority: :high) do |doc, payload|
-  modified_at = LastModifiedAtLoader.new(doc).last_modified_at
+  modified_at = JekyllLastModifiedAt::Loader.new(doc).last_modified_at
 
   puts modified_at
 end
