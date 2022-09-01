@@ -16,6 +16,10 @@ module JekyllLastModifiedAt
       def to_json(_arg)
         to_h.to_json
       end
+
+      def to_liquid
+        "#{last_modified_at}"
+      end
     end
 
 
