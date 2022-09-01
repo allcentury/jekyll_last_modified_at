@@ -38,14 +38,18 @@ module JekyllLastModifiedAt
         entry.last_modified_at = doc.source_file_mtime || Time.now.utc
 
         update_file
+        entry
       elsif existing_entry == entry
         ## no change in checksum so the file hasn't changed
         puts "No change in #{file_name}"
+        existing_entry
       else
         ## checksum has changed, update timestamp
         entry.last_modified_at = Time.now
 
         update_file
+
+        entry
       end
     end
 
@@ -82,6 +86,7 @@ end
 
 Jekyll::Hooks.register(:documents, :post_render, priority: :high) do |doc, payload|
   modified_at = JekyllLastModifiedAt::Loader.new(doc).last_modified_at
+  doc.data['last_modified_at'] = modified_at
 
   puts modified_at
 end
