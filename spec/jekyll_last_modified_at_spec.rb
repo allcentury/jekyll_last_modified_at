@@ -5,7 +5,7 @@ RSpec.describe JekyllLastModifiedAt do
     @@db = {}
 
     def self.records=(db)
-      @@db == db
+      @@db = db
     end
 
     def self.records
@@ -46,15 +46,19 @@ RSpec.describe JekyllLastModifiedAt do
       )
     end
     let(:mtime) do
-      Time.now.utc
+      Time.now.utc.iso8601
     end
 
     let(:entry) do
       checksum = Digest::MD5.hexdigest(content)
-      described_class::Entry.new(file_name, checksum, mtime)
+      JekyllLastModifiedAt::Entry.new(file_name, checksum, mtime)
     end
 
     before(:each) do
+      MemDB.flush!
+    end
+
+    after(:each) do
       MemDB.flush!
     end
 
@@ -81,7 +85,7 @@ RSpec.describe JekyllLastModifiedAt do
 
       it "with a checksum change the database is updated and the entry with a new timestamp" do
         checksum = Digest::MD5.hexdigest("I'm old content")
-        old_entry = described_class::Entry.new(file_name, checksum, mtime)
+        old_entry = JekyllLastModifiedAt::Entry.new(file_name, checksum, mtime)
         MemDB.update(old_entry)
 
         expect(MemDB).to receive(:update).with(entry).once
@@ -94,14 +98,6 @@ RSpec.describe JekyllLastModifiedAt do
 
   describe JekyllLastModifiedAt::FileDB do
     let(:db) { described_class }
-    it "tries to read from a file if available" do
-      expect {
-        allow(File).to receive(:read).with(described_class::DATABASE).and_return("")
-      }.not_to raise_error
-
-      db.read_all
-    end
-
     it "parses JSON and builds entries" do
       name = "some_file"
       checksum = "abc213"
@@ -126,6 +122,15 @@ RSpec.describe JekyllLastModifiedAt do
       expect(entries).to eq({ "some_file" => entry})
     end
 
-    it "updates"
+    it "updates" do
+      name, checksum, time = "name", "abc123", Time.now.utc.iso8601
+      entry = JekyllLastModifiedAt::Entry.new(name, checksum, time)
+
+      db.update(entry)
+
+      entries = db.read_all
+
+      expect(entries.keys.size).to eq(1)
+    end
   end
 end

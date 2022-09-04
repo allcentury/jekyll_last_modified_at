@@ -31,7 +31,7 @@ module JekyllLastModifiedAt
 
     def self.update(record)
       existing = read_all
-      existing[file_name] = record
+      existing[record.file_name] = record
 
       File.open(DATABASE, "w+") do |file|
         file << JSON.generate(existing)
