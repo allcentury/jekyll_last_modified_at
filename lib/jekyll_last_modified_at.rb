@@ -7,30 +7,66 @@ require 'jekyll'
 
 module JekyllLastModifiedAt
   class Error < StandardError; end
-  class Loader
-    Entry = Struct.new(:file_name, :checksum, :last_modified_at) do
-      def ==(other)
-        file_name == other.file_name && checksum == other.checksum
-      end
 
-      def to_json(_arg)
-        to_h.to_json
-      end
-
-      def to_liquid
-        "#{last_modified_at}"
-      end
-    end
-
-
-    attr_reader :file_name, :content, :entry, :doc
+  class FileDB
     DATABASE = "last_modified_at.json"
 
-    def initialize(doc)
+    def self.read_all
+      return {} unless File.readable?(DATABASE)
+
+      file = File.read(DATABASE)
+      json = JSON.parse(file)
+
+      json.map do |file, entry|
+        [
+          file,
+          Entry.new(
+            file,
+            entry["checksum"],
+            Time.parse(entry["last_modified_at"])
+          )
+        ]
+      end.to_h
+    end
+
+    def self.update(record)
+      existing = read_all
+      existing[file_name] = record
+
+      File.open(DATABASE, "w+") do |file|
+        file << JSON.generate(existing)
+      end
+    end
+  end
+
+  Entry = Struct.new(:file_name, :checksum, :last_modified_at) do
+    def ==(other)
+      file_name == other.file_name && checksum == other.checksum
+    end
+
+    def to_json(_arg)
+      to_h.to_json
+    end
+
+    def timestamp
+      last_modified_at
+    end
+
+    def to_liquid
+      "#{last_modified_at}"
+    end
+  end
+
+  class Loader
+    attr_reader :file_name, :content, :entry, :doc, :database, :entries
+
+    def initialize(doc, database = FileDB)
       @file_name = doc.relative_path
       @content = doc.content
       @doc = doc
       @entry = Entry.new(file_name, checksum)
+      @database = database
+      @entries = database.read_all
     end
 
     def last_modified_at
@@ -39,47 +75,21 @@ module JekyllLastModifiedAt
       # we've never seen this file before
       # set the last_modified_at to the mtime and persist
       if !existing_entry
-        entry.last_modified_at = doc.source_file_mtime || Time.now.utc
+        entry.last_modified_at = doc.source_file_mtime || Time.now.utc.iso8601
 
-        update_file
+        database.update(entry)
         entry
       elsif existing_entry == entry
         ## no change in checksum so the file hasn't changed
-        puts "No change in #{file_name}"
         existing_entry
       else
         ## checksum has changed, update timestamp
-        entry.last_modified_at = Time.now
+        entry.last_modified_at = Time.now.utc.iso8601
 
-        update_file
+        database.update(entry)
 
         entry
       end
-    end
-
-    def update_file
-      existing = entries
-      existing[file_name] = entry
-
-      puts "updating existing file with #{JSON.generate(existing)}"
-      File.open(DATABASE, "w+") do |file|
-        file << JSON.generate(existing)
-      end
-    end
-
-    def entries
-      return {} unless File.readable?(DATABASE)
-
-      file = File.read(DATABASE)
-      json = JSON.parse(file)
-
-      load_entries(json)
-    end
-
-    def load_entries(json)
-      json.map do |file, entry|
-        [file, Entry.new(file, entry["checksum"], entry["last_modified_at"])]
-      end.to_h
     end
 
     def checksum
@@ -91,6 +101,4 @@ end
 Jekyll::Hooks.register(:documents, :post_render, priority: :high) do |doc, payload|
   modified_at = JekyllLastModifiedAt::Loader.new(doc).last_modified_at
   doc.data['last_modified_at'] = modified_at
-
-  puts modified_at
 end
