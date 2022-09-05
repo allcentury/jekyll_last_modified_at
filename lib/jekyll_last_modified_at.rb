@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative "jekyll_last_modified_at/version"
+require_relative "jekyll_last_modified_at/db"
+require_relative "jekyll_last_modified_at/entry"
 require 'digest'
 require 'json'
 require 'jekyll'
@@ -8,54 +10,6 @@ require 'jekyll'
 module JekyllLastModifiedAt
   class Error < StandardError; end
 
-  class FileDB
-    DATABASE = "last_modified_at.json"
-
-    def self.read_all
-      return {} unless File.readable?(DATABASE)
-
-      file = File.read(DATABASE)
-      json = JSON.parse(file)
-
-      json.map do |file, entry|
-        [
-          file,
-          Entry.new(
-            file,
-            entry["checksum"],
-            Time.parse(entry["last_modified_at"])
-          )
-        ]
-      end.to_h
-    end
-
-    def self.update(record)
-      existing = read_all
-      existing[record.file_name] = record
-
-      File.open(DATABASE, "w+") do |file|
-        file << JSON.generate(existing)
-      end
-    end
-  end
-
-  Entry = Struct.new(:file_name, :checksum, :last_modified_at) do
-    def ==(other)
-      file_name == other.file_name && checksum == other.checksum
-    end
-
-    def to_json(_arg)
-      to_h.to_json
-    end
-
-    def timestamp
-      last_modified_at
-    end
-
-    def to_liquid
-      "#{last_modified_at}"
-    end
-  end
 
   class Loader
     attr_reader :file_name, :content, :entry, :doc, :database, :entries
@@ -64,7 +18,7 @@ module JekyllLastModifiedAt
       @file_name = doc.relative_path
       @content = doc.content
       @doc = doc
-      @entry = Entry.new(file_name, checksum)
+      @entry = Entry.new(file_name, checksum, nil)
       @database = database
       @entries = database.read_all
     end

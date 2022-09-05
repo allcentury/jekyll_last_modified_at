@@ -95,42 +95,4 @@ RSpec.describe JekyllLastModifiedAt do
       end
     end
   end
-
-  describe JekyllLastModifiedAt::FileDB do
-    let(:db) { described_class }
-    it "parses JSON and builds entries" do
-      name = "some_file"
-      checksum = "abc213"
-      time = Time.now.utc.iso8601
-      file = {
-        some_file: {
-          file_name: name,
-          checksum: checksum,
-          last_modified_at: time,
-        }
-      }
-
-      json =JSON.generate(file)
-
-      allow(File).to receive(:readable?).and_return(true)
-      allow(File).to receive(:read).with(described_class::DATABASE).and_return(json)
-
-
-      entries = db.read_all
-      entry = JekyllLastModifiedAt::Entry.new(name, checksum, time)
-
-      expect(entries).to eq({ "some_file" => entry})
-    end
-
-    it "updates" do
-      name, checksum, time = "name", "abc123", Time.now.utc.iso8601
-      entry = JekyllLastModifiedAt::Entry.new(name, checksum, time)
-
-      db.update(entry)
-
-      entries = db.read_all
-
-      expect(entries.keys.size).to eq(1)
-    end
-  end
 end
