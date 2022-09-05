@@ -1,8 +1,28 @@
 # JekyllLastModifiedAt
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/jekyll_last_modified_at`. To experiment with that code, run `bin/console` for an interactive prompt.
+JekyllLastModifiedAt is an alternative to [jekyll-last-modified-at](https://github.com/gjtorikian/jekyll-last-modified-at).  The difference is how the timestamp is determined.
 
-TODO: Delete this and the text above, and describe your gem
+Take for example this jeklly post:
+
+```
+---
+title: Testing Last Modified At
+layout: last_modified_at
+---
+
+Here are the best cookies:
+
+{% for cookie in site.data.cookies %}
+
+  {{ cookie }}
+
+{% endfor %}
+
+```
+
+With this gem, you can change the data in `site.data.cookies` and a new last-modified-at will be computed and available both to [jekyll-sitemap](https://github.com/jekyll/jekyll-sitemap) and as a liquid tag under `{% last_modified_at %} last modifed at: {% endlast_modified_at %}`.  Unfortunately jekyll-last-modified-at only uses git history to determine the timestmap, where this gem looks at the rendered object and computes a checksum to determine if the content has changed.
+
+It does this by saving a file that you should include in git, `last_modified_at.json`.  You'll see it after you run `jekyll serve` or `jekyll build`.
 
 ## Installation
 
