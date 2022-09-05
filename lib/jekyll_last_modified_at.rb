@@ -55,5 +55,6 @@ end
 
 Jekyll::Hooks.register(:documents, :post_render, priority: :high) do |doc, payload|
   modified_at = JekyllLastModifiedAt::Loader.new(doc).last_modified_at
+
   doc.data['last_modified_at'] = modified_at
 end

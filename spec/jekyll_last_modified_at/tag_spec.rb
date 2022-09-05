@@ -23,9 +23,9 @@ RSpec.describe JekyllLastModifiedAt::LastModifiedBlock do
     expect(Liquid::Template.tags.to_h.keys).to include("last_modified_at")
 
 
-    template = Liquid::Template.parse("{% last_modified_at %} last_modified_at: {% endlast_modified_at %}")
+    template = Liquid::Template.parse("{% last_modified_at %}last_modified_at: {% endlast_modified_at %}")
 
-    expect(template.render("page" => page)).to include(last_modified_at.iso8601)
+    expect(template.render("page" => page)).to eq("last_modified_at: #{last_modified_at.iso8601}")
   end
 
   it "renders current time if last_modified_at not found" do
