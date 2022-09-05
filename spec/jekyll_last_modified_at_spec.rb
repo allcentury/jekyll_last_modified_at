@@ -46,7 +46,7 @@ RSpec.describe JekyllLastModifiedAt do
       )
     end
     let(:mtime) do
-      Time.now.utc.iso8601
+      Time.now
     end
 
     let(:entry) do
@@ -63,7 +63,7 @@ RSpec.describe JekyllLastModifiedAt do
     end
 
     it "determines last_modified_at from mtime without an existing entry" do
-      expect(loader.last_modified_at.timestamp).to eq(mtime)
+      expect(loader.last_modified_at.timestamp).to eq(mtime.iso8601)
     end
 
     it "determines last_modified_at from mtime without an existing entry and saves it" do

@@ -3,6 +3,7 @@
 require_relative "jekyll_last_modified_at/version"
 require_relative "jekyll_last_modified_at/db"
 require_relative "jekyll_last_modified_at/entry"
+require_relative "jekyll_last_modified_at/tag"
 require 'digest'
 require 'json'
 require 'jekyll'
@@ -29,7 +30,7 @@ module JekyllLastModifiedAt
       # we've never seen this file before
       # set the last_modified_at to the mtime and persist
       if !existing_entry
-        entry.last_modified_at = doc.source_file_mtime || Time.now.utc.iso8601
+        entry.last_modified_at = doc.source_file_mtime || Time.now.iso8601
 
         database.update(entry)
         entry
@@ -38,7 +39,7 @@ module JekyllLastModifiedAt
         existing_entry
       else
         ## checksum has changed, update timestamp
-        entry.last_modified_at = Time.now.utc.iso8601
+        entry.last_modified_at = Time.now.iso8601
 
         database.update(entry)
 

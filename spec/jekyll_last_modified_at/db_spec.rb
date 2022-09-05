@@ -9,7 +9,7 @@ RSpec.describe JekyllLastModifiedAt::FileDB do
   it "parses JSON and builds entries" do
     name = "some_file"
     checksum = "abc213"
-    time = Time.now.utc.iso8601
+    time = Time.now.utc
     file = {
       some_file: {
         file_name: name,
@@ -29,7 +29,7 @@ RSpec.describe JekyllLastModifiedAt::FileDB do
 
   context "updates" do
     it "updates" do
-      name, checksum, time = "name", "abc123", Time.now.utc.iso8601
+      name, checksum, time = "name", "abc123", Time.now
       entry = JekyllLastModifiedAt::Entry.new(name, checksum, time)
 
       db.update(entry)

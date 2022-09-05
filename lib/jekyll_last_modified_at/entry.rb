@@ -11,7 +11,7 @@ module JekyllLastModifiedAt
       {
         file_name: file_name,
         checksum: checksum,
-        last_modified_at: last_modified_at,
+        last_modified_at: last_modified_at.iso8601,
       }
     end
 
@@ -24,11 +24,11 @@ module JekyllLastModifiedAt
     end
 
     def timestamp
-      last_modified_at
+      last_modified_at.iso8601
     end
 
     def to_liquid
-      "#{last_modified_at}"
+      "#{last_modified_at.iso8601}"
     end
   end
 end

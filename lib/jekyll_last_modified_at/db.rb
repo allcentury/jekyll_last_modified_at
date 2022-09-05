@@ -2,6 +2,10 @@ module JekyllLastModifiedAt
   class FileDB
     DATABASE = "last_modified_at.json"
 
+    def self.read(name)
+      read_all[name]
+    end
+
     def self.read_all
       return {} unless File.readable?(DATABASE)
 
