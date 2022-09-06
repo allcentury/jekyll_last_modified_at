@@ -20,9 +20,11 @@ Here are the best cookies:
 
 ```
 
-With this gem, you can change the data in `site.data.cookies` and a new last-modified-at will be computed and available both to [jekyll-sitemap](https://github.com/jekyll/jekyll-sitemap) and as a liquid tag under `{% last_modified_at %} last modifed at: {% endlast_modified_at %}`.  Unfortunately jekyll-last-modified-at only uses git history to determine the timestmap, where this gem looks at the rendered object and computes a checksum to determine if the content has changed.
+With this gem, you can change the data in `site.data.cookies` and an update to`last_modified_at` will be computed and available in `doc.data` which is then available to [jekyll-sitemap](https://github.com/jekyll/jekyll-sitemap) and as a liquid tag under `{% last_modified_at %} last modifed at: {% endlast_modified_at %}`.
 
-It does this by saving a file that you should include in git, `last_modified_at.json`.  You'll see it after you run `jekyll serve` or `jekyll build`.
+Unfortunately jekyll-last-modified-at only uses git history to determine the timestmap, where this gem looks at the rendered object and computes a checksum to determine if the content has changed.
+
+It saves history in a file that you should include in git, `last_modified_at.json`.  You'll see it after you run `jekyll serve` or `jekyll build`.
 
 ## Installation
 
