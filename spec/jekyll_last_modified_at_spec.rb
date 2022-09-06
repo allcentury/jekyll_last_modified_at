@@ -119,6 +119,10 @@ RSpec.describe JekyllLastModifiedAt do
         expect(loader.last_modified_at.timestamp).to eq(mtime.iso8601)
       end
 
+      it "determines last_modified_at if the file has never been persisted before" do
+        allow(File).to receive(:readable?).and_return(false)
+        expect(loader.last_modified_at.timestamp).to eq(mtime.iso8601)
+      end
     end
   end
 end

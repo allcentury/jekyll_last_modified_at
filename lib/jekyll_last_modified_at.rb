@@ -34,7 +34,11 @@ module JekyllLastModifiedAt
         if doc.respond_to?(:source_file_mtime)
           entry.last_modified_at = doc.source_file_mtime || Time.now
         else # Page object
-          entry.last_modified_at = File.mtime(file_name)
+          entry.last_modified_at = if File.readable?(file_name)
+            File.mtime(file_name)
+          else
+            Time.now
+          end
         end
 
         database.update(entry)
