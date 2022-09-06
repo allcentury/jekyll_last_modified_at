@@ -4,6 +4,7 @@ require_relative "jekyll_last_modified_at/version"
 require_relative "jekyll_last_modified_at/db"
 require_relative "jekyll_last_modified_at/entry"
 require_relative "jekyll_last_modified_at/tag"
+require_relative "jekyll_last_modified_at/hook"
 require 'digest'
 require 'json'
 require 'jekyll'
@@ -30,7 +31,11 @@ module JekyllLastModifiedAt
       # we've never seen this file before
       # set the last_modified_at to the mtime and persist
       if !existing_entry
-        entry.last_modified_at = doc.source_file_mtime || Time.now
+        if doc.respond_to?(:source_file_mtime)
+          entry.last_modified_at = doc.source_file_mtime || Time.now
+        else # Page object
+          entry.last_modified_at = File.mtime(file_name)
+        end
 
         database.update(entry)
         entry
