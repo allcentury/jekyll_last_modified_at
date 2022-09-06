@@ -32,7 +32,7 @@ module JekyllLastModifiedAt
       existing[record.file_name] = record
 
       File.open(DATABASE, "w+") do |file|
-        file << JSON.generate(existing)
+        file << JSON.pretty_generate(existing)
       end
     end
 
