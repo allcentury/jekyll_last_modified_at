@@ -20,7 +20,7 @@ module JekyllLastModifiedAt
       @file_name = doc.relative_path
       @content = doc.content
       @doc = doc
-      @entry = Entry.new(file_name, checksum, nil)
+      @entry = Entry.new(file_name, checksum, nil, doc.url)
       @database = database
       @entries = database.read_all
     end

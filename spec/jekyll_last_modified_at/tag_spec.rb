@@ -18,7 +18,7 @@ RSpec.describe JekyllLastModifiedAt::LastModifiedBlock do
     end
 
     it "finds the last_modified_at if found" do
-      entry = JekyllLastModifiedAt::Entry.new("my_file", "abc123", last_modified_at)
+      entry = JekyllLastModifiedAt::Entry.new("my_file", "abc123", last_modified_at, "url")
       JekyllLastModifiedAt::FileDB.update(entry)
       JekyllLastModifiedAt::FileDB.read(entry)
 

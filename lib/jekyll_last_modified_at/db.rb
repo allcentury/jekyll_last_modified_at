@@ -21,7 +21,8 @@ module JekyllLastModifiedAt
           Entry.new(
             file,
             entry["checksum"],
-            Time.parse(entry["last_modified_at"])
+            Time.parse(entry["last_modified_at"]),
+            entry["url"],
           )
         ]
       end.to_h

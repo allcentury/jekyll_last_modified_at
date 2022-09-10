@@ -1,10 +1,11 @@
 module JekyllLastModifiedAt
   class Entry
-    attr_accessor :file_name, :checksum, :last_modified_at
-    def initialize(file_name, checksum, last_modified_at)
+    attr_accessor :file_name, :checksum, :last_modified_at, :url
+    def initialize(file_name, checksum, last_modified_at, url)
       @file_name = file_name
       @checksum = checksum
       @last_modified_at = last_modified_at
+      @url = url
     end
 
     def to_h
@@ -12,6 +13,7 @@ module JekyllLastModifiedAt
         file_name: file_name,
         checksum: checksum,
         last_modified_at: last_modified_at.iso8601,
+        url: url,
       }
     end
 

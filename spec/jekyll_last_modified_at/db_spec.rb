@@ -10,16 +10,18 @@ RSpec.describe JekyllLastModifiedAt::FileDB do
     name = "some_file"
     checksum = "abc213"
     time = Time.now.utc
+    url = "myurl"
     file = {
       some_file: {
         file_name: name,
         checksum: checksum,
         last_modified_at: time,
+        url: url,
       }
     }
 
     json = JSON.generate(file)
-    entry = JekyllLastModifiedAt::Entry.new(name, checksum, time)
+    entry = JekyllLastModifiedAt::Entry.new(name, checksum, time, url)
     db.update(entry)
 
     entries = db.read_all
@@ -29,8 +31,8 @@ RSpec.describe JekyllLastModifiedAt::FileDB do
 
   context "updates" do
     it "updates" do
-      name, checksum, time = "name", "abc123", Time.now
-      entry = JekyllLastModifiedAt::Entry.new(name, checksum, time)
+      name, checksum, time, url = "name", "abc123", Time.now, "myurl"
+      entry = JekyllLastModifiedAt::Entry.new(name, checksum, time, url)
 
       db.update(entry)
 

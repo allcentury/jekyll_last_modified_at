@@ -37,6 +37,7 @@ RSpec.describe JekyllLastModifiedAt do
 
       let(:file_name) { "_posts/my_post.md" }
       let(:content) { "I wrote a post!" }
+      let(:url) { '/mypost' }
 
       let(:doc) do
         instance_double(
@@ -44,6 +45,7 @@ RSpec.describe JekyllLastModifiedAt do
           relative_path: file_name,
           content: content,
           source_file_mtime: mtime,
+          url: url,
         )
       end
       let(:mtime) do
@@ -52,7 +54,7 @@ RSpec.describe JekyllLastModifiedAt do
 
       let(:entry) do
         checksum = Digest::MD5.hexdigest(content)
-        JekyllLastModifiedAt::Entry.new(file_name, checksum, mtime)
+        JekyllLastModifiedAt::Entry.new(file_name, checksum, mtime, url)
       end
 
       before(:each) do
@@ -86,7 +88,7 @@ RSpec.describe JekyllLastModifiedAt do
 
         it "with a checksum change the database is updated and the entry with a new timestamp" do
           checksum = Digest::MD5.hexdigest("I'm old content")
-          old_entry = JekyllLastModifiedAt::Entry.new(file_name, checksum, mtime)
+          old_entry = JekyllLastModifiedAt::Entry.new(file_name, checksum, mtime, url)
           MemDB.update(old_entry)
 
           expect(MemDB).to receive(:update).with(entry).once
@@ -110,6 +112,7 @@ RSpec.describe JekyllLastModifiedAt do
           Jekyll::Page,
           relative_path: file_path,
           content: content,
+          url: "mypost",
         )
       end
       let(:mtime) { Time.now }
