@@ -25,6 +25,17 @@ module JekyllLastModifiedAt
       @entries = database.read_all
     end
 
+    def ignore?
+      exclusions = doc.site.config.dig('last_modified_at', 'exclude')
+      exclusions.each do |ex|
+        # check for exact matches
+        return true if File.basename(file_name) == ex
+        if ex.include?("*")
+          return true if file_name.match(ex)
+        end
+      end
+    end
+
     def last_modified_at
       existing_entry = entries[file_name]
 

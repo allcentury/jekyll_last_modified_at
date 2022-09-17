@@ -46,7 +46,24 @@ RSpec.describe JekyllLastModifiedAt do
           content: content,
           source_file_mtime: mtime,
           url: url,
+          site: site,
         )
+      end
+
+      let(:site) do
+        instance_double(Jekyll::Site, config: config)
+      end
+      let(:config) do
+        {
+          'last_modified_at' => {
+            'exclude' => [
+              '.*.scss',
+              'feed.xml',
+              '.*.css',
+              '.*.js',
+            ]
+          }
+        }
       end
       let(:mtime) do
         Time.now
@@ -63,6 +80,23 @@ RSpec.describe JekyllLastModifiedAt do
 
       after(:each) do
         MemDB.flush!
+      end
+
+      context "exclusions" do
+        context "exact matches" do
+          let(:file_name) { "feed.xml" }
+          it "skips from a config list" do
+            expect(loader.ignore?).to eq true
+          end
+        end
+
+        context "wildcards" do
+          let(:file_name) { "mygreat.css" }
+
+          it "skips from a config list" do
+            expect(loader.ignore?).to eq true
+          end
+        end
       end
 
       it "determines last_modified_at from mtime without an existing entry" do

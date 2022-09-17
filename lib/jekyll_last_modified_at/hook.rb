@@ -4,9 +4,10 @@ module JekyllLastModifiedAt
   module Hook
     def self.get_modified
       proc do |item|
-        modified_at = JekyllLastModifiedAt::Loader.new(item).last_modified_at
+        loader = JekyllLastModifiedAt::Loader.new(item)
+        next if loader.ignore?
 
-        item.data['last_modified_at'] = modified_at
+        item.data['last_modified_at'] = loader.last_modified_at
       end
     end
   end
