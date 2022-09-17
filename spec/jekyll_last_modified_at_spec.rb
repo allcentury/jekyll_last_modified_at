@@ -55,7 +55,7 @@ RSpec.describe JekyllLastModifiedAt do
       end
       let(:config) do
         {
-          'last_modified_at' => {
+          'jekyll_last_modified_at' => {
             'exclude' => [
               '.*.scss',
               'feed.xml',
