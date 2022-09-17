@@ -97,6 +97,13 @@ RSpec.describe JekyllLastModifiedAt do
             expect(loader.ignore?).to eq true
           end
         end
+
+        context "no exclusions" do
+          let(:config) { {} }
+          it "returns false" do
+            expect(loader.ignore?).to eq false
+          end
+        end
       end
 
       it "determines last_modified_at from mtime without an existing entry" do

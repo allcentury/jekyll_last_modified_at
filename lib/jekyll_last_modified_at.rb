@@ -27,6 +27,7 @@ module JekyllLastModifiedAt
 
     def ignore?
       exclusions = doc.site.config.dig('last_modified_at', 'exclude')
+      return false unless exclusions
       exclusions.each do |ex|
         # check for exact matches
         return true if File.basename(file_name) == ex
