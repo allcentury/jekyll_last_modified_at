@@ -35,6 +35,7 @@ module JekyllLastModifiedAt
           return true if file_name.match(ex)
         end
       end
+      false
     end
 
     def last_modified_at

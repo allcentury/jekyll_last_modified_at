@@ -104,6 +104,13 @@ RSpec.describe JekyllLastModifiedAt do
             expect(loader.ignore?).to eq false
           end
         end
+
+        context "no matches" do
+          let(:file_name) { "mygreat.md" }
+          it "returns false" do
+            expect(loader.ignore?).to eq false
+          end
+        end
       end
 
       it "determines last_modified_at from mtime without an existing entry" do
