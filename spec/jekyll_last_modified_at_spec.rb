@@ -69,6 +69,10 @@ RSpec.describe JekyllLastModifiedAt do
         Time.now
       end
 
+      let(:formatted_dat) do
+        mtime.strftime("%d-%b-%y")
+      end
+
       let(:entry) do
         checksum = Digest::MD5.hexdigest(content)
         JekyllLastModifiedAt::Entry.new(file_name, checksum, mtime, url)

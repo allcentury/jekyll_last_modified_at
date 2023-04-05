@@ -29,6 +29,10 @@ module JekyllLastModifiedAt
       last_modified_at.iso8601
     end
 
+    def to_date
+      last_modified_at.strftime("%d-%b-%y")
+    end
+
     def to_liquid
       "#{last_modified_at.iso8601}"
     end

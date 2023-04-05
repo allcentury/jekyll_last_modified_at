@@ -1,4 +1,5 @@
 require 'liquid'
+require 'time'
 
 module JekyllLastModifiedAt
   class LastModifiedBlock < ::Liquid::Block
@@ -8,9 +9,9 @@ module JekyllLastModifiedAt
 
       entry = JekyllLastModifiedAt::FileDB.read(page)
       if entry
-        "#{text}#{entry.to_liquid}"
+        "#{text}#{entry.to_date}"
       else
-        "#{text}#{Time.now.iso8601}"
+        "#{text}#{Time.now.strftime("%d-%b-%y")}"
       end
     end
   end
