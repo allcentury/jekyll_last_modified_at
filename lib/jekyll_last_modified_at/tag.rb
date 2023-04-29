@@ -4,7 +4,12 @@ module JekyllLastModifiedAt
   class LastModifiedBlock < ::Liquid::Block
     def render(context)
       text = super
-      page = context['page'].relative_path
+      if text.include?("IGNORE")
+        text = nil
+      end
+      # require 'pry'
+      # binding.pry
+      page = context['page']["relative_path"]
 
       entry = JekyllLastModifiedAt::FileDB.read(page)
       if entry
