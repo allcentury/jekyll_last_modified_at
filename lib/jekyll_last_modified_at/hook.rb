@@ -17,3 +17,6 @@ end
 Jekyll::Hooks.register(:documents, :post_render, priority: :high, &JekyllLastModifiedAt::Hook.get_modified)
 Jekyll::Hooks.register(:posts, :post_render, priority: :high, &JekyllLastModifiedAt::Hook.get_modified)
 Jekyll::Hooks.register(:pages, :post_render, priority: :high, &JekyllLastModifiedAt::Hook.get_modified)
+Jekyll::Hooks.register(:documents, :post_init, priority: :high, &JekyllLastModifiedAt::Hook.get_modified)
+Jekyll::Hooks.register(:posts, :post_init, priority: :high, &JekyllLastModifiedAt::Hook.get_modified)
+Jekyll::Hooks.register(:pages, :post_init, priority: :high, &JekyllLastModifiedAt::Hook.get_modified)
