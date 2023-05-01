@@ -7,8 +7,6 @@ module JekyllLastModifiedAt
       if text.include?("IGNORE")
         text = nil
       end
-      # require 'pry'
-      # binding.pry
       page = context['page']["relative_path"]
 
       entry = JekyllLastModifiedAt::FileDB.read(page)
