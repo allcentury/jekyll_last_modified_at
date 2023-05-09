@@ -9,7 +9,7 @@ module JekyllLastModifiedAt
       end
       page = context['page']["relative_path"]
 
-      entry = JekyllLastModifiedAt::FileDB.read(page)
+      entry = JekyllLastModifiedAt::FileDB.cache(page)
       if entry
         "#{text}#{entry.to_liquid}"
       else
