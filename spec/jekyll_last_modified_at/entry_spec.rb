@@ -21,6 +21,6 @@ RSpec.describe JekyllLastModifiedAt::Entry do
   end
 
   it "to_liquid" do
-    expect(entry.to_liquid).to eq(last_modified_at.iso8601)
+    expect(entry.to_liquid).to eq(last_modified_at.strftime("%Y-%m-%d"))
   end
 end

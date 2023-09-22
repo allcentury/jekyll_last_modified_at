@@ -35,18 +35,18 @@ RSpec.describe JekyllLastModifiedAt::LastModifiedBlock do
 
       template = Liquid::Template.parse("{% last_modified_at %}last_modified_at: {% endlast_modified_at %}")
 
-      expect(template.render("page" => page)).to eq("last_modified_at: #{last_modified_at.iso8601}")
+      expect(template.render("page" => page)).to eq("last_modified_at: #{last_modified_at.strftime("%Y-%m-%d")}")
     end
 
     it "renders current time if last_modified_at is not found" do
 
       template = Liquid::Template.parse("{% last_modified_at %} last_modified_at: {% endlast_modified_at %}")
 
-      utc = Time.now.iso8601
+      utc = Time.now
       time = instance_double(Time, iso8601: utc)
       allow(Time).to receive(:now).and_return(time)
 
-      expect(template.render("page" => page)).to include(utc)
+      expect(template.render("page" => page)).to include(utc.strftime("%Y-%m-%d"))
     end
   end
 end
