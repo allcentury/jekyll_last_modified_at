@@ -13,7 +13,7 @@ module JekyllLastModifiedAt
       if entry
         "#{text}#{entry.to_liquid}"
       else
-        "#{text}#{Time.now.iso8601}"
+        "#{text}#{Time.now.strftime("%Y-%m-%d")}"
       end
     end
   end
