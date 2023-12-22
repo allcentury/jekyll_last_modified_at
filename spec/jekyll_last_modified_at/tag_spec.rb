@@ -13,8 +13,16 @@ RSpec.describe JekyllLastModifiedAt::LastModifiedBlock do
   end
 
   context "documents" do
+    let(:file) do
+      double("File", relative_path: "my_file")
+    end
+
     let(:page) do
-      instance_double(Jekyll::Drops::DocumentDrop, to_liquid: double("File", relative_path: "my_file"))
+      instance_double(Jekyll::Drops::DocumentDrop, to_liquid: file)
+    end
+
+    before(:each) do
+      allow(file).to receive(:[]).with("relative_path").and_return(file.relative_path)
     end
 
     it "finds the last_modified_at if found" do
@@ -27,18 +35,18 @@ RSpec.describe JekyllLastModifiedAt::LastModifiedBlock do
 
       template = Liquid::Template.parse("{% last_modified_at %}last_modified_at: {% endlast_modified_at %}")
 
-      expect(template.render("page" => page)).to eq("last_modified_at: #{last_modified_at.iso8601}")
+      expect(template.render("page" => page)).to eq("last_modified_at: #{last_modified_at.strftime("%Y-%m-%d")}")
     end
 
     it "renders current time if last_modified_at is not found" do
 
       template = Liquid::Template.parse("{% last_modified_at %} last_modified_at: {% endlast_modified_at %}")
 
-      utc = Time.now.iso8601
+      utc = Time.now
       time = instance_double(Time, iso8601: utc)
       allow(Time).to receive(:now).and_return(time)
 
-      expect(template.render("page" => page)).to include(utc)
+      expect(template.render("page" => page)).to include(utc.strftime("%Y-%m-%d"))
     end
   end
 end

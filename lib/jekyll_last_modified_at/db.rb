@@ -2,6 +2,16 @@ module JekyllLastModifiedAt
   class FileDB
     DATABASE = "last_modified_at.json"
 
+    @@cache = {}
+
+    def self.cache(name)
+      if @@cache.empty?
+        @@cache = read_all
+      end
+
+      @@cache[name]
+    end
+
     def self.read(name)
       read_all[name]
     end
