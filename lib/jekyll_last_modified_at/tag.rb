@@ -4,13 +4,16 @@ module JekyllLastModifiedAt
   class LastModifiedBlock < ::Liquid::Block
     def render(context)
       text = super
-      page = context['page'].relative_path
+      if text.include?("IGNORE")
+        text = nil
+      end
+      page = context['page']["relative_path"]
 
-      entry = JekyllLastModifiedAt::FileDB.read(page)
+      entry = JekyllLastModifiedAt::FileDB.cache(page)
       if entry
         "#{text}#{entry.to_liquid}"
       else
-        "#{text}#{Time.now.iso8601}"
+        "#{text}#{Time.now.strftime("%Y-%m-%d")}"
       end
     end
   end
